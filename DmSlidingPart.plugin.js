@@ -1,3 +1,11 @@
+/**
+ * @name DmSlidingPart
+ * @version 1.6
+ * @description Clicking any sidebar button animates the chat panel with a 3D slide-in effect.
+ * @author Diane Foxington
+ */
+
+module.exports = class DmSlidingPart {
     start() {
         console.log("[AnimatorPlugin] Started!");
 
@@ -66,3 +74,4 @@
         // Remove injected CSS
         BdApi.clearCSS("animator-css");
     }
+};
