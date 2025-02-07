@@ -1,0 +1,425 @@
+/**
+ * @name         CrimsonPaw 2025
+ * @description  For The Crimson Paw bandit enjoyers.
+ * @author Diane Foxington
+ * @version 1.4.8
+ */
+
+
+/*@import url('https://mr-miner1.github.io/Better-Badges/src/badges.css'); /* animated badges */
+@import url('https://pixelmelt.github.io/Spectra/src/animcord.css'); /* extra animations */
+@import url('https://pixelmelt.github.io/Spectra/src/roundite.css'); /* rounded gui */
+@import url('https://discord-custom-covers.github.io/usrbg/dist/usrbg.css'); /* user backgrounds */
+@import url("https://pixelmelt.github.io/Spectra/src/cosmetics.css"); /* user cosmetics */
+@import url("https://raw.githack.com/NYRI4/Discolored/master/main.css"); /* colored discord SVGs */
+@import url('https://p0rtl6.github.io/BD-AnimatedSpeakingRings/src/base.css'); /* The base speaking rings */
+@import url('https://p0rtl6.github.io/BD-AnimatedSpeakingRings/src/voiceconnectedpanel.css'); /* The voice connected panel */
+@import url('https://p0rtl6.github.io/BD-AnimatedSpeakingRings/src/bigusers.css'); /* The fullscreen user panels */
+@import url("https://discordstyles.github.io/RadialStatus/dist/RadialStatus.css");
+
+:root{
+    /*Speaking Rings*/
+  --gradient1:  #ffe89b;
+  --gradient2:  #fdc91e;
+  --gradientangle: 45deg;
+  --dmvoicebgcolor: #c39a13;
+    
+   /*Roundite*/
+  --roundness: 15px;
+
+  /* animated badges */
+  --badge-size: 22px; /*discord defualt = 18px, theme defualt = 22px;*/
+  --badge-margin: 1.5px; /*discord default = 2px, theme defualt = 1.5px*/
+  --badges-everywhere-size: 15px; /*default = 15px*/
+  
+   /* radial status importing*/
+  --rs-small-spacing: 2px; /* Gap between avatar and status for members list/dms | MUST end in px */
+  --rs-medium-spacing: 3px; /* Gap between avatar and status for User popout | MUST end in px */
+  --rs-large-spacing: 4px; /* Gap between avatar and status for User profiles | MUST end in px */
+
+  --rs-small-width: 2px; /* Thickness of status border for members list/dms | MUST end in px */
+  --rs-medium-width: 3px; /* Thickness of status border for User popout | MUST end in px */
+  --rs-large-width: 4px; /* Thickness of status border for User profile | MUST end in px */
+
+  --rs-avatar-shape: 50%; /* 50% for round - 0% for square */
+
+  --rs-online-color: #ffd000; /* Colour for online status */
+  --rs-idle-color: #ffd000; /* Colour for idle status */
+  --rs-dnd-color: #f04747; /* Colour for dnd status */
+  --rs-offline-color: #141414; /* Colour for offline status */
+  --rs-streaming-color: #643da7; /* Colour for streaming status */
+  --rs-invisible-color: #2c6bbd; /* Colour for invisible status - Note: this will only show for your own invisibility */
+  --rs-phone-color: var(--rs-online-color); /* Colour of the ring and phone icon when a user is on their phone |  */
+
+  --rs-phone-visible: block; /* Visibility of the phone icon next to a users avatar. | block = visible | none = hidden */
+
+}
+
+
+/* ------- >> NEW LOGO ICON CODE << ------*/
+/* When selected */
+#app-mount > div.appAsidePanelWrapper_a3002d > div.notAppAsidePanel_a3002d > div.app_a3002d > div > div.layers__960e4.layers__160d8 > div > div > nav > ul > div.itemsContainer_ef3116 > div.scroller_ef3116.none_d125d2.scrollerBase_d125d2 > div.tutorialContainer__1f388 > div > div.listItemWrapper__91816.selected__91816 > div > svg > foreignObject > div > div{
+    color:transparent;
+    background: url('https://i.imgur.com/PF8HgwR.png');
+    background-position: center;
+    background-size:cover;
+    background-color: transparent!important;
+    min-width: 60px;
+    max-width: 70px;
+    min-height: 60px;
+    overflow: visible;
+    border-radius: 25px!important;
+}
+/*When Deselected*/
+#app-mount > div.appAsidePanelWrapper_a3002d > div.notAppAsidePanel_a3002d > div.app_a3002d > div > div.layers__960e4.layers__160d8 > div > div > nav > ul > div.itemsContainer_ef3116 > div.scroller_ef3116.none_d125d2.scrollerBase_d125d2 > div.tutorialContainer__1f388 > div > div.listItemWrapper__91816 > div > svg > foreignObject > div > div{
+    color:transparent;
+    background: url('https://i.imgur.com/6LQb3ZJ.png');
+    background-position: center;
+    background-size: cover;
+    background-color: transparent!important;
+    min-width: 60px;
+    max-width: 70px;
+    min-height: 60px;
+    overflow: visible;
+    border-radius: 20px;
+    
+}
+
+
+/*Default Discord Themeing [don't touchy, much importanto]*/
+.theme-dark {
+    --header-primary: #ffffff;
+    --text-normal: #ffffff;
+    --background-primary: #141414!important;
+    --background-secondary: #141414;
+    --background-tertiary: black;
+    /*--background-tertiary: #141414;*/
+    --text-muted: #c39a13;
+    --interactive-muted: var(--text-muted);
+    --interactive-hover: #c39a13;
+    --channels-default: #FDD651;
+    --text-link: #ffd500be;
+    --channeltextarea-background: #000000;
+    --background-secondary-alt: #000000;
+    --interactive-normal: #ffc400;
+    --scrollbar-auto-track: #000000;
+    --scrollbar-auto-thumb: #0a0a0a;
+    --background-floating: #000000;
+    --background-modifier-selected: rgba(255, 208, 0, 0.452);
+    --background-modifier-hover: #ffd90031;
+    --interactive-active: #ffc400!important;
+}
+/* Fix buggy activity panel icons */
+.lookFilled__201d5 .contents__201d5, .lookLink__201d5 .contents__201d5, .lookInverted_a299dc .contents__201d5, .lookOutlined__201d5 .contents__201d5{
+    overflow: visible;
+}
+.actionButtons_e131a9{
+    margin-right: 0px;
+    grid-gap: 8px;
+    padding-right: 0px;
+}
+/* server channel colors */
+.icon__2ea32 {
+    color: var(--channels-default);
+}
+.modeUnreadImportant__2ea32 .icon__2ea32, .modeUnreadImportant__2ea32:hover .icon__2ea32, .modeSelected__2ea32 .icon__2ea32, .modeSelected__2ea32:hover .icon__2ea32 {
+    color: var(--interactive-active);
+}
+.modeUnreadImportant__2ea32 .icon__2ea32, .modeUnreadImportant__2ea32:hover .icon__2ea32{
+    color: var(--interactive-active);
+}
+.modeSelected__2ea32 .icon__2ea32, .modeSelected__2ea32:hover .icon__2ea32{
+    color:var(--channels-default);
+}
+.modeSelected__2ea32 .name__2ea32{
+    color:var(--channels-default);
+}
+.modeSelected__2ea32:hover .icon__2ea32{
+    color:var(--interactive-hover);
+}
+
+/* server categories */
+.container_cc72c1 {
+    color: var(--interactive-active);
+}
+.wrapperCommon__29444{ /*arrow*/
+    color: var(--interactive-active);
+}
+.children__29444{
+    color:var(--interactive-active);
+}
+
+.activityText__972a0{
+    color: var(--channels-default);
+}
+/* keyword tracker icon*/
+[aria-label="Keyword Matches"] svg{
+    color:var(--interactive-normal)!important;
+}
+/* Removal history icon*/
+[aria-label="Removed Connection History"] svg{
+    color:var(--interactive-normal)!important;
+}
+/* Profile hide icon*/
+[aria-label="Hide User Profile"] svg{
+    color:var(--interactive-normal)!important;
+}
+/* Member list icon*/
+[aria-label="Hide Member List"] svg{
+    color:var(--interactive-normal)!important;
+}
+/* Chat roundness */
+.platform-win .sidebar_c48ade{
+    border-radius: 15px;
+    margin: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+/*user on bottom left*/
+.panels_c48ade{
+    border-radius: 15px;
+    margin: 5px;
+    padding-right: 0px;
+}
+.container_e131a9{
+    margin-top: 0px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+.activityPanel_c48ade{
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+/*space between icons gone*/
+.avatarWrapper__37e49{
+    margin-right: -1px!important;
+}
+.theme-dark .container__37e49{ /*roundness to user bottom left*/
+	border-radius: 15px!important;
+}
+
+/* chat fixes*/.chat_f75fb0{
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    margin-bottom:10px;
+    margin-left: 0px;
+    background-color: black;
+}
+.chatContent_f75fb0{ /* gap between user profile and chat*/
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+    margin-left: 0px;
+    margin-right: 2px;
+}
+.scrollableContainer__74017{ 
+    border-radius: 15px;
+}
+.form_f75fb0:after{
+    background:transparent!important;
+}
+.inner__74017{
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 5px;
+    margin-top: -5px;
+    margin-left: 10px;
+
+}
+/* ping option chat fix */
+.scroller__6b0e0{
+    background-color: var(--background-secondary)!important;
+}
+
+.title_f75fb0{ /*header with channel and member names*/
+    margin-top: 5px;
+    margin-right: 10px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    width: auto;
+}
+.content_f75fb0{ /*user info profile on the right in DM*/
+    margin-right: 10px!important;
+}
+/*user member list*/
+.members_c8ffbb,.container_c8ffbb{
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+/*server channels row*/
+.platform-win .scroller_ef3116, .platform-osx .scroller_ef3116{/*roundness*/
+    /*background-color: #080808;*/
+    background-color: var(--background-primary);
+    border-radius: 15px;
+    margin-bottom: 10px!important;
+    margin-top: 5px!important;
+    padding-bottom: 5px!important;
+    margin-left: 10px!important;
+}
+.guilds_c48ade{
+	width:83px;
+}
+.tutorialContainer__1f388{ /* home icon align position*/
+    margin-top: 5px!important;
+}
+
+/*server folders fix*/
+.wrapper_ef3116 .expandedFolderBackground__48112{
+    width:115px!important;
+    border-radius: 15px!important;
+}
+.wrapper_ef3116 .wrapper__48112 [role="group"]{ 
+    width:112px;
+    display:flex!important;
+    flex-flow: row wrap!important;
+    border: 0!important;
+    margin-left: 0!important;
+    justify-content: space-between!important;
+}
+.wrapper_ef3116 .wrapper__48112{
+    width:auto!important;
+}
+/*guild separator gap fix*/
+.wrapper_ef3116 .guildSeparator__252b6{
+    margin-top: -1px!important;
+}
+/* call buttons - added 9th January 2024*/
+#app-mount > div.appAsidePanelWrapper_a3002d > div.notAppAsidePanel_a3002d > div.app_a3002d > div > div.layers__960e4.layers__160d8 > div > div > div > div > div.chat_f75fb0 > div.wrapper_cb9592.noChat_cb9592.video_cb9592 > div.callContainer_cb9592.theme-dark > div > div.videoControls_bfe55a > div.bottomControls_bfe55a.controlSection_bfe55a > div.flex__7c0ba.horizontal__7c0ba.justifyCenter_abf706.alignCenter_abf706.noWrap_abf706 > div.wrapper__1405b > div:nth-child(5) > svg > foreignObject > div > button {
+    background: var(--interactive-active) ;
+    color: black;
+}
+.colorable_f1ceac.primaryDark_f1ceac{
+    background: var(--interactive-active)!important;
+}
+
+.colorable_f1ceac.primaryDark_f1ceac, .colorable_f1ceac.primaryDark_f1ceac .centerIcon_f1ceac{
+    color:black;
+}
+.contextMenuCaret_f1ceac{
+    color:black;
+}
+.colorable_f1ceac.white_f1ceac:hover{
+    background: var(--interactive-hover)!important;
+}
+.colorable_f1ceac.white_f1ceac{
+    background: var(--interactive-active);
+}
+.floating-window.resizable{
+    border-radius: 8px;
+}
+/* fuck you discovery useless crap discord added for no reason*/
+.footer__214dc{
+    display:none;
+}
+.channelAppLauncher_e6e74f{
+    display:none;
+}
+/*fix char counter lol*/
+.chatCounter_XOMPsh{
+    right: 0!important;
+}
+
+.content__99f8c div:has(.container__0f2e8), .membersGroup_c8ffbb:has(.headerContainer__095fe) {
+    display: none;
+}
+
+.popoverReactionHoverBar_f84418{
+    background: var(--background-secondary);
+}
+/* Fix temporary experiment wrapper for call buttons */
+.experimentWrapper__1405b {
+    gap: 0px;
+}
+.colorable_f1ceac.experimentDark_f1ceac, .colorable_f1ceac.experimentDark_f1ceac .centerIcon_f1ceac{
+    color: var(--interactive-normal)!important;
+}
+.buttonSection__1405b {
+    background: black!important;
+    padding: 4px;
+    gap: 0px;
+    border: 0px solid black;
+}
+#app-mount > div.appAsidePanelWrapper_a3002d > div.notAppAsidePanel_a3002d > div.app_a3002d > div > div.layers__960e4.layers__160d8 > div > div > div > div.content_c48ade > div.chat_f75fb0 > div.wrapper_cb9592.minimum_cb9592 > div.callContainer_cb9592 > div > div.videoControls_bfe55a > div.bottomControls_bfe55a.controlSection_bfe55a > div.flex__7c0ba.horizontal__7c0ba.justifyCenter_abf706.alignCenter_abf706.noWrap_abf706{
+    border-color: #ffc400;
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 15px;
+}
+/* hide the fucking annoying shitty weird random activity and soundboard
+ in-call icons and tell them to go fuck themselves */
+#app-mount > div.appAsidePanelWrapper_a3002d > div.notAppAsidePanel_a3002d > div.app_a3002d > div > div.layers__960e4.layers__160d8 > div > div > div > div.content_c48ade > div.chat_f75fb0 > div.wrapper_cb9592.minimum_cb9592 > div.callContainer_cb9592 > div > div.videoControls_bfe55a > div.bottomControls_bfe55a.controlSection_bfe55a > div.flex__7c0ba.horizontal__7c0ba.justifyCenter_abf706.alignCenter_abf706.noWrap_abf706 > div.experimentWrapper__1405b.wrapper__1405b > div:nth-child(2) > div.caretButtonContainer_f1ceac{
+    display: none;
+}
+#app-mount > div.appAsidePanelWrapper_a3002d > div.notAppAsidePanel_a3002d > div.app_a3002d > div > div.layers__960e4.layers__160d8 > div > div > div > div.content_c48ade > div.chat_f75fb0 > div.wrapper_cb9592.minimum_cb9592 > div.callContainer_cb9592 > div > div.videoControls_bfe55a > div.bottomControls_bfe55a.controlSection_bfe55a > div.flex__7c0ba.horizontal__7c0ba.justifyCenter_abf706.alignCenter_abf706.noWrap_abf706 > div.experimentWrapper__1405b.wrapper__1405b > div:nth-child(2) > div.buttonContainer__1405b > div{
+    display: none;
+}
+/* change disconnect button */
+#app-mount > div.appAsidePanelWrapper_a3002d > div.notAppAsidePanel_a3002d > div.app_a3002d > div > div.layers__960e4.layers__160d8 > div > div > div > div.content_c48ade > div.chat_f75fb0 > div.wrapper_cb9592.minimum_cb9592 > div.callContainer_cb9592 > div > div.videoControls_bfe55a > div.bottomControls_bfe55a.controlSection_bfe55a > div.flex__7c0ba.horizontal__7c0ba.justifyCenter_abf706.alignCenter_abf706.noWrap_abf706 > div.experimentWrapper__1405b.wrapper__1405b > div:nth-child(3) > div > div > button{
+    background-color: black!important;
+}
+.colorable_f1ceac.red_f1ceac, .colorable_f1ceac.red_f1ceac .centerIcon_f1ceac{
+    color: var(--status-danger)!important;
+}
+
+/* hide fucking shop button FUCK YOU */
+#app-mount > div.appAsidePanelWrapper_a3002d > div.notAppAsidePanel_a3002d > div.app_a3002d > div > div.layers__960e4.layers__160d8 > div > div > div > div.content_c48ade > div.sidebar_c48ade > nav > div.scroller__99e7c.thin__99f8c.scrollerBase__99f8c.fade__99f8c > ul > li:nth-child(5){
+    display: none!important;
+}
+/* ALSO FUCK NITRO BUTTON.. V, I've seen corpos strip farmers of their crops
+and eventually of their land, and now, they wanna force nitro on you! We must bomb the Arasaka tower NOW! */
+#app-mount > div.appAsidePanelWrapper_a3002d > div.notAppAsidePanel_a3002d > div.app_a3002d > div > div.layers__960e4.layers__160d8 > div > div > div > div.content_c48ade > div.sidebar_c48ade > nav > div.scroller__99e7c.thin__99f8c.scrollerBase__99f8c.fade__99f8c > ul > li:nth-child(4){
+    display:none!important;
+}
+/* Change the "Find or start a conversation" to custom text*/ 
+.searchBar__35e86 .searchBarComponent__35e86{
+    border-radius: 8px;
+    text-align: center;
+    color:transparent!important;
+}
+.searchBar__35e86 .searchBarComponent__35e86::before{
+    content: "Where we heistin' today, paw?";
+    color: var(--text-muted);
+    text-align: center;
+}
+#app-mount > div.appAsidePanelWrapper_a3002d > div.notAppAsidePanel_a3002d > div:nth-child(4) > div.layer_bc663c > div > div > div > input{
+    placeholder:
+}
+
+
+.item__58105{
+    background-color: #ffc400!important;
+    opacity: 0.5!important;
+}
+.pill_e5445c .item__58105{
+    background-color: #ffc400!important;
+    opacity: 0.5!important;
+    height: 20px;
+}
+
+
+/* I dont know what to call this but fuck you activities */
+#app-mount > div.appAsidePanelWrapper_a3002d > div.notAppAsidePanel_a3002d > div.app_a3002d > div > div.layers__960e4.layers__160d8 > div > div > div > div.content_c48ade > div.sidebar_c48ade > section > div.wrapper_e131a9 > div > div.actionButtons_e131a9 > button:nth-child(3){
+    display: none!important;
+}
+
+/* make it designed the same as call buttons */
+#app-mount > div.appAsidePanelWrapper_a3002d > div.notAppAsidePanel_a3002d > div.app_a3002d > div > div.layers__960e4.layers__160d8 > div > div > div > div.content_c48ade > div.sidebar_c48ade > section > div.wrapper_e131a9 > div > div.actionButtons_e131a9{
+    border-color: #ffc400;
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 10px;
+    padding-top: 0px;
+    
+}
+
+.button_e131a9.buttonColor_e131a9, .button_e131a9 .buttonColor_e131a9{
+    background-color: transparent;
+}
+.button_e131a9.buttonColor_e131a9:hover, .button_e131a9:hover .buttonColor_e131a9:hover{
+    background-color: #ffc400;
+    color:black;
+    border-radius: 5px;
+    --__lottieIconColor: currentColor;
+}
