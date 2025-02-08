@@ -84,41 +84,8 @@ module.exports = class PawCord {
         }
     }
 
-    start() {
-        console.log("[PawCord] Started!");
-        this.injectSettingsButton();
-        this.checkForUpdates();  // Check for updates when the plugin starts
 
-        // Start individual plugin functionalities
-        this.startOpeningIntroPlugin();
-        this.startDmSlidingPart();
-        this.startHiddenServerList();
-    }
-
-    // Check for plugin updates
-    checkForUpdates() {
-        console.log("[Combined Plugins] Checking for updates...");
-
-        // Mockup: Replace this with actual version checking logic (e.g., API call)
-        this.latestVersion = "1.1";  // This should come from a version tracking server or service
-
-        if (this.pluginVersion !== this.latestVersion) {
-            this.promptForUpdate();
-        }
-    }
-
-    // Prompt the user to update
-    promptForUpdate() {
-        const updateMessage = `A newer version (${this.latestVersion}) of the plugin is available. Would you like to update?`;
-        if (window.confirm(updateMessage)) {
-            console.log("[Combined Plugins] User wants to update.");
-            // You can redirect the user to download the latest version here or prompt them for action
-            window.open('https://your-update-link.com', '_blank');
-        } else {
-            console.log("[Combined Plugins] User chose not to update.");
-        }
-    }
-
+    
     // Start the DM Sliding Part functionality
     startDmSlidingPart() {
         console.log("[AnimatorPlugin] Started!");
@@ -509,6 +476,95 @@ startOpeningIntroPlugin() {
                event.clientY >= rect.top && event.clientY <= rect.bottom;
     }
 
+// Update Checker
+// New method to fetch latest release version
+fetchLatestRelease() {
+    const githubApiUrl = 'https://api.github.com/repos/DianeFoxingtonn/PawCord/releases/latest'; // Replace with your repo URL
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", githubApiUrl, true);
+    xhr.setRequestHeader("User-Agent", "BetterDiscord Plugin");
+
+    xhr.onload = () => {
+        if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            const latestVersion = data.tag_name;  // Latest release version (e.g., v1.2.0)
+            const downloadUrl = data.assets[0].browser_download_url;  // URL for downloading the asset (plugin file)
+
+            console.log(`Latest version: ${latestVersion}`);
+            console.log(`Download URL: ${downloadUrl}`);
+            
+            // If a new version is available, auto-update the plugin
+            if (this.pluginVersion !== latestVersion) {
+                this.autoUpdate(downloadUrl);
+            }
+        } else {
+            console.error(`Failed to fetch latest release. HTTP Status: ${xhr.status}`);
+        }
+    };
+
+    xhr.onerror = function() {
+        console.error("Error occurred while trying to fetch release data from GitHub.");
+    };
+
+    xhr.send();  // Send the request
+}
+
+// Method to download and apply the update
+autoUpdate(downloadUrl) {
+    console.log("[PawCord] New version available! Downloading...");
+
+    // Use Fetch API to download the plugin file (for example)
+    fetch(downloadUrl)
+        .then(response => response.blob())
+        .then(blob => {
+            // Blob now contains the new plugin file
+            const newPlugin = new Blob([blob]);
+            // Save it or inject the new version here (implementation will depend on how you load plugins)
+            
+            // Notify the user
+            this.notifyUser("The plugin has been updated successfully!");
+
+            // Optionally, you can trigger the reloading of the plugin here.
+        })
+        .catch(error => {
+            console.error("[PawCord] Error during auto-update:", error);
+        });
+}
+
+// Notify user with a Discord popup
+notifyUser(message) {
+    BdApi.alert("Update Notification", message);  // This will create a notification in Discord
+}
+// Start checking for updates
+checkForUpdates() {
+    console.log("[PawCord] Checking for updates...");
+    this.fetchLatestRelease();  // Call the method to check for updates
+}
+
+
+
+
+
+
+/* ------------------- START func. HERE ------------------ */
+start() {
+    console.log("[PawCord] Started!");
+    this.injectSettingsButton();
+    this.checkForUpdates();  // Check for updates when the plugin starts
+
+    // Start individual plugin functionalities
+    this.startOpeningIntroPlugin();
+    this.startDmSlidingPart();
+    this.startHiddenServerList();
+
+    // Start auto update check
+    this.fetchLatestRelease();
+}
+
+
+
+// ------------------------- STOP func. BENEATH THIS --------------------------
     stop() {
 
         console.log("[PawCord] Stopped!");
@@ -521,11 +577,8 @@ startOpeningIntroPlugin() {
 
         // Remove injected CSS
         BdApi.clearCSS("animator-css");
-//
-// ******************************************* */
-
 // 2
-console.log("[Hidden Server List] Stopped!");
+    console.log("[Hidden Server List] Stopped!");
         
         document.removeEventListener("mousemove", this.hideServerList);
         BdApi.clearCSS("hidden-server-css");
@@ -541,9 +594,6 @@ console.log("[Hidden Server List] Stopped!");
 
         if (this.hoverZone) this.hoverZone.remove();
         if (this.observer) this.observer.disconnect();
-//*****************************************************/
-
-
     // 3
     // Clean up if needed (remove settings button, close settings modal)
     const settingsButton = document.querySelector('.settings-button');
@@ -551,9 +601,6 @@ console.log("[Hidden Server List] Stopped!");
 
     const modal = document.querySelector('.plugin-settings-modal');
     if (modal) modal.remove();
-    //********************************************** */
-
-
     // 4
 
 
