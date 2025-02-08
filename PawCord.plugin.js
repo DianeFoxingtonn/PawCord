@@ -1,12 +1,14 @@
 /**
  * @name PawCord
  * @version 1.0
- * @description Reimagines discord UI functionality. 
+ * @description Reimagines discord UI functionality. \n
  * Features:
  * Hidden server list (open it by hovering over where it should appear)
  * Chat box animations (triggers on click of DM)
  * Intro Sequence (mostly watermark but also a neat startup feature to hide slow loading)
  * @author Diane Foxington
+ * @authorid 317744975016230925
+ * @source https://github.com/DianeFoxingtonn/PawCord/tree/main
  */
 
 module.exports = class PawCord {
@@ -28,11 +30,63 @@ module.exports = class PawCord {
         this.hoverZone = null;
         this.hideTimeout = null;
         this.observer = null;
+
+        // Settings
+        this.settings = {
+            settingOne: true,
+            settingTwo: false
+        };
+    }
+
+
+    getSettingsPanel() {
+        // Create the settings UI (a simple form with checkboxes for example)
+        const settingsPanel = document.createElement('div');
+
+        settingsPanel.innerHTML = `
+            <h3>Example Plugin Settings</h3>
+            <label>
+                <input type="checkbox" id="settingOne" ${this.settings.settingOne ? 'checked' : ''}>
+                Enable Setting One
+            </label>
+            <br>
+            <label>
+                <input type="checkbox" id="settingTwo" ${this.settings.settingTwo ? 'checked' : ''}>
+                Enable Setting Two
+            </label>
+        `;
+
+        // Event listeners to handle changes in settings
+        settingsPanel.querySelector('#settingOne').addEventListener('change', (e) => {
+            this.settings.settingOne = e.target.checked;
+            console.log(`Setting One: ${this.settings.settingOne}`);
+        });
+
+        settingsPanel.querySelector('#settingTwo').addEventListener('change', (e) => {
+            this.settings.settingTwo = e.target.checked;
+            console.log(`Setting Two: ${this.settings.settingTwo}`);
+        });
+
+        return settingsPanel;
+    }
+
+    injectSettingsButton() {
+        // Add a settings button to the plugin context menu
+        const pluginList = document.querySelector('.plugin-list'); // Assuming the plugin list exists
+        if (pluginList) {
+            const settingsButton = document.createElement('button');
+            settingsButton.textContent = '⚙️'; // This is the gear icon
+            settingsButton.className = 'settings-button';
+            settingsButton.addEventListener('click', () => this.onSettingsButtonClick());
+            
+            // Add the button next to your plugin in the list
+            pluginList.appendChild(settingsButton);
+        }
     }
 
     start() {
         console.log("[PawCord] Started!");
-
+        this.injectSettingsButton();
         this.checkForUpdates();  // Check for updates when the plugin starts
 
         // Start individual plugin functionalities
@@ -456,8 +510,11 @@ startOpeningIntroPlugin() {
     }
 
     stop() {
+
         console.log("[PawCord] Stopped!");
         // Stop each individual plugin functionality
+
+
 // 1 
         // Remove Click Event Listener
         document.removeEventListener("click", this.handleClick.bind(this));
@@ -465,10 +522,11 @@ startOpeningIntroPlugin() {
         // Remove injected CSS
         BdApi.clearCSS("animator-css");
 //
-// *******************************************
+// ******************************************* */
+
 // 2
 console.log("[Hidden Server List] Stopped!");
-
+        
         document.removeEventListener("mousemove", this.hideServerList);
         BdApi.clearCSS("hidden-server-css");
 
@@ -483,9 +541,23 @@ console.log("[Hidden Server List] Stopped!");
 
         if (this.hoverZone) this.hoverZone.remove();
         if (this.observer) this.observer.disconnect();
-    
-//****************************************************
+//*****************************************************/
+
+
     // 3
+    // Clean up if needed (remove settings button, close settings modal)
+    const settingsButton = document.querySelector('.settings-button');
+    if (settingsButton) settingsButton.remove();
+
+    const modal = document.querySelector('.plugin-settings-modal');
+    if (modal) modal.remove();
+    //********************************************** */
+
+
+    // 4
+
+
+    // LAST
     this.cleanup();
     }
 
