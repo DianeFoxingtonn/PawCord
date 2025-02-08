@@ -479,7 +479,7 @@ startOpeningIntroPlugin() {
 // Update Checker
 // New method to fetch latest release version
 fetchLatestRelease() {
-    const githubApiUrl = 'https://api.github.com/repos/DianeFoxingtonn/PawCord/releases/latest'; // Replace with your repo URL
+    const githubApiUrl = 'https://github.com/DianeFoxingtonn/PawCord/releases/latest'; // Replace with your repo URL
 
     const xhr = new XMLHttpRequest();
     xhr.open("GET", githubApiUrl, true);
