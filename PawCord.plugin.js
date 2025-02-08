@@ -15,7 +15,7 @@ module.exports = class PawCord {
     constructor() {
 
          // Updt
-        this.pluginVersion = "1.0";  // Current version of the combined plugin
+        this.pluginVersion = "1.1";  // Current version of the combined plugin
         this.latestVersion = null;  // Placeholder for latest version from an update check
 
         // 2
