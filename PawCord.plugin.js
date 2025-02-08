@@ -14,10 +14,6 @@
 module.exports = class PawCord {
     constructor() {
 
-         // Updt
-        this.pluginVersion = "1.2";  // Current version of the combined plugin
-        this.latestVersion = null;  // Placeholder for latest version from an update check
-
         // 2
         this.logoURL = "https://i.imgur.com/6LQb3ZJ.png"; // Custom Paw Cord logo
         this.debugMode = true; // Debug mode enabled
@@ -479,76 +475,62 @@ startOpeningIntroPlugin() {
 // Update Checker
 // New method to fetch latest release version
 async fetchLatestRelease() {
-    const githubApiUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js'; // Replace with your repo URL
-    console.log("[PawCord] Fetching latest release...");
+    const githubRawUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js'; // Use the raw URL here
+    console.log("[PawCord] Fetching latest plugin version...");
 
     try {
-        const response = await fetch(githubApiUrl, {
+        const response = await fetch(githubRawUrl, {
             method: "GET",
             headers: {
-                "Accept": "application/vnd.github.v3+json", // This ensures GitHub responds with JSON
+                "Accept": "application/javascript",  // Optional: Ensure GitHub responds with JS file
             }
         });
 
         if (response.ok) {
-            const data = await response.json();
-            const latestVersion = data.tag_name;  // Latest release version (e.g., v1.2.0)
-            const downloadUrl = data.assets[0].browser_download_url;  // URL for downloading the asset (plugin file)
+            const latestPluginContent = await response.text();  // Get the raw content of the file
 
-            console.log(`Latest release fetched successfully: ${latestVersion}`);
-            console.log(`Download URL: ${downloadUrl}`);
+            // You can perform any version comparison or update checking logic here if desired
 
-            // Check if there's a new version
-            if (this.pluginVersion !== latestVersion) {
-                console.log("[PawCord] New version detected. Preparing to update...");
-                this.autoUpdate(downloadUrl);
-            } else {
-                console.log("[PawCord] No new version found.");
-            }
+            console.log("[PawCord] Plugin content fetched successfully!");
+            this.autoUpdate(latestPluginContent);
         } else {
-            console.error(`[PawCord] Failed to fetch latest release. HTTP Status: ${response.status}`);
+            console.error(`[PawCord] Failed to fetch plugin. HTTP Status: ${response.status}`);
         }
     } catch (error) {
-        console.error("[PawCord] Error occurred while trying to fetch release data from GitHub:", error);
+        console.error("[PawCord] Error occurred while trying to fetch the plugin:", error);
     }
 }
-async autoUpdate(downloadUrl) {
-    console.log("[PawCord] New version available! Downloading...");
-
-    try {
-        const response = await fetch(downloadUrl);
-
-        if (!response.ok) {
-            throw new Error("Failed to fetch plugin file.");
-        }
-
-        const blob = await response.blob();
-        console.log("[PawCord] Plugin file downloaded.");
-
-        // You can add logic here to save or apply the update
-        // For example, if you're injecting the file directly into BetterDiscord
-        const newPlugin = new Blob([blob]);
-
-        // Notify the user
-        this.notifyUser("The plugin has been updated successfully!");
-
-        // Optionally, trigger reloading of the plugin here
-    } catch (error) {
-        console.error("[PawCord] Error during auto-update:", error);
-    }
-}
-
 // Notify user with a Discord popup
 notifyUser(message) {
     BdApi.alert("Update Notification", message);  // This will create a notification in Discord
 }
 
-// Check for updates
-checkForUpdates() {
-    console.log("[PawCord] Checking for updates...");
-    this.fetchLatestRelease();  // Call the method to check for updates
-}
+async fetchLatestRelease() {
+    const githubRawUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js'; // Use the raw URL here
+    console.log("[PawCord] Fetching latest plugin version...");
 
+    try {
+        const response = await fetch(githubRawUrl, {
+            method: "GET",
+            headers: {
+                "Accept": "application/javascript",  // Optional: Ensure GitHub responds with JS file
+            }
+        });
+
+        if (response.ok) {
+            const latestPluginContent = await response.text();  // Get the raw content of the file
+
+            // You can perform any version comparison or update checking logic here if desired
+
+            console.log("[PawCord] Plugin content fetched successfully!");
+            this.autoUpdate(latestPluginContent);
+        } else {
+            console.error(`[PawCord] Failed to fetch plugin. HTTP Status: ${response.status}`);
+        }
+    } catch (error) {
+        console.error("[PawCord] Error occurred while trying to fetch the plugin:", error);
+    }
+}
 
 
 
