@@ -1,6 +1,6 @@
 /**
  * @name PawCord
- * @version 1.2
+ * @version 1.1
  * @description Reimagines discord UI functionality. \n
  * Features:
  * Hidden server list (open it by hovering over where it should appear)
@@ -15,7 +15,7 @@ module.exports = class PawCord {
     constructor() {
 
          // Updt
-        this.pluginVersion = "1.2";  // Current version of the combined plugin
+        this.pluginVersion = "1.1";  // Current version of the combined plugin
         this.latestVersion = null;  // Placeholder for latest version from an update check
 
         // 2
