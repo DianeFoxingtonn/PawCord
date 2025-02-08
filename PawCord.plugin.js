@@ -539,7 +539,6 @@ async fetchLatestRelease() {
 start() {
     console.log("[PawCord] Started!");
     this.injectSettingsButton();
-    this.checkForUpdates();  // Check for updates when the plugin starts
 
     // Start individual plugin functionalities
     this.startOpeningIntroPlugin();
