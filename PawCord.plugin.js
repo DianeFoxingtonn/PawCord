@@ -1,6 +1,6 @@
 /**
  * @name PawCord
- * @version 1.1
+ * @version 1.2
  * @description Reimagines discord UI functionality. \n
  * Features:
  * Hidden server list (open it by hovering over where it should appear)
@@ -15,7 +15,7 @@ module.exports = class PawCord {
     constructor() {
 
          // Updt
-        this.pluginVersion = "1.1";  // Current version of the combined plugin
+        this.pluginVersion = "1.2";  // Current version of the combined plugin
         this.latestVersion = null;  // Placeholder for latest version from an update check
 
         // 2
@@ -479,7 +479,7 @@ startOpeningIntroPlugin() {
 // Update Checker
 // New method to fetch latest release version
 async fetchLatestRelease() {
-    const githubApiUrl = 'https://api.github.com/repos/DianeFoxingtonn/PawCord/releases/latest'; // Replace with your repo URL
+    const githubApiUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js'; // Replace with your repo URL
     console.log("[PawCord] Fetching latest release...");
 
     try {
