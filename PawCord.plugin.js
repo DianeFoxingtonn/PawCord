@@ -478,17 +478,20 @@ startOpeningIntroPlugin() {
 
 // Update Checker
 // New method to fetch latest release version
-fetchLatestRelease() {
+async fetchLatestRelease() {
     const githubApiUrl = 'https://api.github.com/repos/DianeFoxingtonn/PawCord/releases/latest'; // Replace with your repo URL
     console.log("[PawCord] Fetching latest release...");
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", githubApiUrl, true);
-    xhr.setRequestHeader("User-Agent", "BetterDiscord Plugin");
+    try {
+        const response = await fetch(githubApiUrl, {
+            method: "GET",
+            headers: {
+                "Accept": "application/vnd.github.v3+json", // This ensures GitHub responds with JSON
+            }
+        });
 
-    xhr.onload = () => {
-        if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
+        if (response.ok) {
+            const data = await response.json();
             const latestVersion = data.tag_name;  // Latest release version (e.g., v1.2.0)
             const downloadUrl = data.assets[0].browser_download_url;  // URL for downloading the asset (plugin file)
 
@@ -503,53 +506,48 @@ fetchLatestRelease() {
                 console.log("[PawCord] No new version found.");
             }
         } else {
-            console.error(`[PawCord] Failed to fetch latest release. HTTP Status: ${xhr.status}`);
+            console.error(`[PawCord] Failed to fetch latest release. HTTP Status: ${response.status}`);
         }
-    };
-
-    xhr.onerror = function() {
-        console.error("[PawCord] Error occurred while trying to fetch release data from GitHub.");
-    };
-
-    xhr.send();  // Send the request
+    } catch (error) {
+        console.error("[PawCord] Error occurred while trying to fetch release data from GitHub:", error);
+    }
 }
-
- // Download and apply the update
- autoUpdate(downloadUrl) {
+async autoUpdate(downloadUrl) {
     console.log("[PawCord] New version available! Downloading...");
 
-    fetch(downloadUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Failed to fetch plugin file.");
-            }
-            return response.blob();
-        })
-        .then(blob => {
-            console.log("[PawCord] Plugin file downloaded.");
-            const newPlugin = new Blob([blob]);
-            // Save it or inject the new version here (implementation will depend on how you load plugins)
+    try {
+        const response = await fetch(downloadUrl);
 
-            // Notify the user
-            this.notifyUser("The plugin has been updated successfully!");
+        if (!response.ok) {
+            throw new Error("Failed to fetch plugin file.");
+        }
 
-            // Optionally, you can trigger the reloading of the plugin here.
-        })
-        .catch(error => {
-            console.error("[PawCord] Error during auto-update:", error);
-        });
+        const blob = await response.blob();
+        console.log("[PawCord] Plugin file downloaded.");
+
+        // You can add logic here to save or apply the update
+        // For example, if you're injecting the file directly into BetterDiscord
+        const newPlugin = new Blob([blob]);
+
+        // Notify the user
+        this.notifyUser("The plugin has been updated successfully!");
+
+        // Optionally, trigger reloading of the plugin here
+    } catch (error) {
+        console.error("[PawCord] Error during auto-update:", error);
+    }
 }
 
 // Notify user with a Discord popup
 notifyUser(message) {
     BdApi.alert("Update Notification", message);  // This will create a notification in Discord
 }
+
 // Check for updates
 checkForUpdates() {
     console.log("[PawCord] Checking for updates...");
     this.fetchLatestRelease();  // Call the method to check for updates
 }
-
 
 
 
