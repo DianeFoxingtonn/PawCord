@@ -19,6 +19,7 @@ module.exports = class PawCord {
         // Update
         this.localVersion = null;
         this.remoteVersion = null;
+        this.pluginPath = path.resolve(__dirname, 'PawCord.plugin.js');  // Full resolved path
 
         // 2
         this.logoURL = "https://i.imgur.com/6LQb3ZJ.png"; // Custom Paw Cord logo
@@ -500,7 +501,7 @@ async getRemoteVersion() {
             const versionMatch = text.match(/@version\s+([0-9\.]+)/);
             this.remoteVersion = versionMatch ? versionMatch[1] : null;
         } else {
-            console.error('Failed to fetch remote plugin');
+            console.error('[PawCord] Failed to fetch remote plugin');
             this.remoteVersion = null;
         }
     } catch (err) {
@@ -544,10 +545,10 @@ async updatePlugin() {
             fs.writeFileSync(this.pluginPath, text, 'utf8');
             this.showUpdatePopup();
         } else {
-            console.error('Failed to fetch remote plugin for update');
+            console.error('[PawCord] Failed to fetch remote plugin for update');
         }
     } catch (err) {
-        console.error("Error updating plugin:", err);
+        console.error("[PawCord] Error updating plugin:", err);
     }
 }
 
@@ -580,7 +581,10 @@ start() {
 
     // Start auto update check
     this.checkForUpdates();
-    this.pluginPath = path.join(__dirname, 'PawCord.plugin.js');  // Change this to the actual path
+
+    // This assumes the plugin file is in the same directory as the plugin code
+    const pluginPath = path.resolve(__dirname, 'PawCord.plugin.js');
+    console.log('Resolved Full Plugin Path:', pluginPath);  
 
 }
 
