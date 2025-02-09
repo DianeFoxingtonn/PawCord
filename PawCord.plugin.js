@@ -10,9 +10,15 @@
  * @authorid 317744975016230925
  * @source https://github.com/DianeFoxingtonn/PawCord/tree/main
  */
+const fs = require('fs');
+const path = require('path');
+
 
 module.exports = class PawCord {
     constructor() {
+        // Update
+        this.localVersion = null;
+        this.remoteVersion = null;
 
         // 2
         this.logoURL = "https://i.imgur.com/6LQb3ZJ.png"; // Custom Paw Cord logo
@@ -473,85 +479,92 @@ startOpeningIntroPlugin() {
     }
 
 // Update Checker
-// New method to fetch latest release version
-// Check if the local version is saved
 getLocalVersion() {
     try {
-        const localVersion = BdApi.Data.load("PawCord", "version");
-        return localVersion || "0.0";  // Default to "0.0" if no version is found
-    } catch (error) {
-        console.error("[PawCord] Error reading local version:", error);
-        return "0.0";  // Return a fallback version if an error occurs
+        const data = fs.readFileSync(this.pluginPath, 'utf8');
+        const versionMatch = data.match(/@version\s+([0-9\.]+)/);
+        this.localVersion = versionMatch ? versionMatch[1] : null;
+        
+    } catch (err) {
+        console.error("Error reading local plugin file:", err);
+        this.localVersion = null;
     }
 }
-
-// Compare the versions
-compareVersions(localVersion, remoteVersion) {
-    const local = localVersion.split(".").map(Number);
-    const remote = remoteVersion.split(".").map(Number);
-
-    for (let i = 0; i < Math.max(local.length, remote.length); i++) {
-        if ((local[i] || 0) < (remote[i] || 0)) {
-            return -1; // Local version is older
-        } else if ((local[i] || 0) > (remote[i] || 0)) {
-            return 1; // Local version is newer
-        }
-    }
-    return 0; // Versions are the same
-}
-
-// Fetch the latest release and check version
-async fetchLatestRelease() {
-    const githubRawUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js'; // GitHub raw URL
-    console.log("[PawCord] Fetching latest plugin version...");
+async getRemoteVersion() {
+    const rawGitHubUrl = 'https://github.com/DianeFoxingtonn/PawCord/blob/main/PawCord.plugin.js'; // Change this to your GitHub link
 
     try {
-        const response = await fetch(githubRawUrl, { method: "GET" });
+        const response = await fetch(rawGitHubUrl);
         if (response.ok) {
-            const latestPluginContent = await response.text();
-
-            // Extract the version from the raw content (look for the @version in the plugin)
-            const versionMatch = latestPluginContent.match(/@version\s+([\d\.]+)/);
-            const remoteVersion = versionMatch ? versionMatch[1] : "0.0";  // Default to "0.0" if version not found
-
-            // Get the local version
-            const localVersion = this.getLocalVersion();
-
-            // Compare versions
-            if (this.compareVersions(localVersion, remoteVersion) < 0) {
-                console.log("[PawCord] New version found! Updating...");
-                this.autoUpdate(latestPluginContent);
-            } else {
-                console.log("[PawCord] You are up to date.");
-            }
+            const text = await response.text();
+            const versionMatch = text.match(/@version\s+([0-9\.]+)/);
+            this.remoteVersion = versionMatch ? versionMatch[1] : null;
         } else {
-            console.error(`[PawCord] Failed to fetch plugin. HTTP Status: ${response.status}`);
+            console.error('Failed to fetch remote plugin');
+            this.remoteVersion = null;
         }
-    } catch (error) {
-        console.error("[PawCord] Error occurred while trying to fetch the plugin:", error);
+    } catch (err) {
+        console.error("Error fetching remote plugin version:", err);
+        this.remoteVersion = null;
     }
 }
 
-// Method to auto-update
-autoUpdate(latestPluginContent) {
+compareVersions(version1, version2) {
+    const v1 = version1.split('.').map(num => parseInt(num));
+    const v2 = version2.split('.').map(num => parseInt(num));
+
+    for (let i = 0; i < Math.max(v1.length, v2.length); i++) {
+        const val1 = v1[i] || 0;
+        const val2 = v2[i] || 0;
+        if (val1 > val2) return 1;
+        if (val1 < val2) return -1;
+    }
+    return 0;
+}
+
+async checkForUpdates() {
+    this.getLocalVersion();
+    await this.getRemoteVersion();
+
+    if (this.localVersion && this.remoteVersion && this.localVersion !== this.remoteVersion) {
+        if (this.compareVersions(this.remoteVersion, this.localVersion) > 0) {
+            console.log(`New version available! ${this.remoteVersion} > ${this.localVersion}`);
+            await this.updatePlugin();
+        }
+    }
+}
+
+async updatePlugin() {
+    const rawGitHubUrl = 'https://github.com/DianeFoxingtonn/PawCord/blob/main/PawCord.plugin.js'; // Change this to your GitHub link
+
     try {
-        // Save the latest version and content (for auto-update)
-        BdApi.Data.save("PawCord", "version", latestPluginContent.match(/@version\s+([\d\.]+)/)[1]);
-        BdApi.Data.save("PawCord", "pluginContent", latestPluginContent);
-
-        // Here you can trigger the update process (e.g., replacing the current plugin file)
-        this.notifyUser("A new version of PawCord is available! Updating now.");
-        console.log("[PawCord] Plugin updated successfully.");
-        location.reload();  // Reload the page to apply the updated plugin
-    } catch (error) {
-        console.error("[PawCord] Failed to update plugin:", error);
+        const response = await fetch(rawGitHubUrl);
+        if (response.ok) {
+            const text = await response.text();
+            fs.writeFileSync(this.pluginPath, text, 'utf8');
+            this.showUpdatePopup();
+        } else {
+            console.error('Failed to fetch remote plugin for update');
+        }
+    } catch (err) {
+        console.error("Error updating plugin:", err);
     }
 }
-// Notify user with a Discord popup
-notifyUser(message) {
-    BdApi.alert("Update Notification", message);  // This will create a notification in Discord
-}
 
+showUpdatePopup() {
+    BdApi.showConfirmationModal(
+        "PawCord Update",
+        `PawCord has been updated to version ${this.remoteVersion}.`,
+        {
+            confirmText: "Reload Discord",
+            cancelText: "Cancel",
+            onConfirm: () => {
+                BdApi.alert("PawCord", "Reloading Discord...");
+                location.reload();  // Triggers Discord reload
+            }
+        }
+    );
+}
 
 
 
@@ -566,7 +579,9 @@ start() {
     this.startHiddenServerList();
 
     // Start auto update check
-    this.fetchLatestRelease();
+    this.checkForUpdates();
+    this.pluginPath = path.join(__dirname, 'PawCord.plugin.js');  // Change this to the actual path
+
 }
 
 
