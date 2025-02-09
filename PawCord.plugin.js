@@ -491,7 +491,7 @@ getLocalVersion() {
     }
 }
 async getRemoteVersion() {
-    const rawGitHubUrl = 'https://github.com/DianeFoxingtonn/PawCord/blob/main/PawCord.plugin.js'; // Change this to your GitHub link
+    const rawGitHubUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js'; // Change this to your GitHub link
 
     try {
         const response = await fetch(rawGitHubUrl);
@@ -535,7 +535,7 @@ async checkForUpdates() {
 }
 
 async updatePlugin() {
-    const rawGitHubUrl = 'https://github.com/DianeFoxingtonn/PawCord/blob/main/PawCord.plugin.js'; // Change this to your GitHub link
+    const rawGitHubUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js'; // Change this to your GitHub link
 
     try {
         const response = await fetch(rawGitHubUrl);
