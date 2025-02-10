@@ -11,6 +11,7 @@ const path = require("path");
 module.exports = class PawCordUpdater {
     constructor() {
         this.pluginName = "PawCord";
+        this.newPawCord = path.join(BdApi.Plugins.folder, this.pluginFile);
         this.pluginFile = "PawCord.plugin.js";
         this.pluginPath = path.join(BdApi.Plugins.folder, this.pluginFile);
         this.rawGithubUrl = "https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js";
@@ -46,7 +47,12 @@ module.exports = class PawCordUpdater {
 
 
             // Enable the new PawCord
-            BdApi.Plugins.enable(this.pluginFile);
+            if (fs.existsSync(this.newPawCord)) {
+                        console.log(`[${this.pluginName}] Enabling New PawCord...`);
+                        BdApi.Plugins.enable("PawCord");
+                    } else {
+                        console.warn(`[${this.pluginName}] PawCord file missing, could not enable it.`);
+                    }
 
             // Disable and remove itself
             setTimeout(() => {
@@ -54,6 +60,7 @@ module.exports = class PawCordUpdater {
                 if (fs.existsSync(__filename)) {
                     fs.unlinkSync(__filename);
                     console.log(`[PawCordUpdater] Updater removed.`);
+                    location.reload();
                 }
             }, 2000);
         } catch (error) {
