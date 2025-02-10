@@ -24,7 +24,7 @@ module.exports = class PawCord {
 
         // 2
         this.logoURL = "https://i.imgur.com/6LQb3ZJ.png"; // Custom Paw Cord logo
-        this.debugMode = false; // Debug mode enabled
+        this.debugMode = true; // Debug mode enabled
         this.overrideInterval = null; // Forces UI above intro
 
 
