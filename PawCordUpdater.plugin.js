@@ -11,7 +11,6 @@ const path = require("path");
 module.exports = class PawCordUpdater {
     constructor() {
         this.pluginName = "PawCord";
-        this.newPawCord = path.join(BdApi.Plugins.folder, this.pluginFile);
         this.pluginFile = "PawCord.plugin.js";
         this.pluginPath = path.join(BdApi.Plugins.folder, this.pluginFile);
         this.rawGithubUrl = "https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js";
@@ -47,7 +46,8 @@ module.exports = class PawCordUpdater {
 
 
             // Enable the new PawCord
-            if (fs.existsSync(this.newPawCord)) {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            if (fs.existsSync(this.pluginPath)) {
                         console.log(`[${this.pluginName}] Enabling New PawCord...`);
                         BdApi.Plugins.enable("PawCord");
                     } else {
