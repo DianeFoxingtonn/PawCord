@@ -20,6 +20,12 @@ module.exports = class PawCordUpdater {
         console.log(`[PawCordUpdater] Started, updating PawCord...`);
         await this.updatePawCord();
     }
+    async notifyUser(){
+        BdApi.showConfirmationModal("PawCord Update", 'Automatically updated to a newer version. Reloading...', {
+            confirmText: "",
+            cancelText: "",
+        });
+    }
 
     async updatePawCord() {
         try {
@@ -50,12 +56,14 @@ module.exports = class PawCordUpdater {
 
             // Disable and remove itself
             setTimeout(() => {
+                this.notifyUser();
                 BdApi.Plugins.disable("PawCordUpdater");
                 if (fs.existsSync(__filename)) {
                     fs.unlinkSync(__filename);
                     console.log(`[PawCordUpdater] Updater removed.`);
                     //location.reload();
                 }
+                location.reload();
             }, 2000);
         } catch (error) {
             console.error(`[PawCordUpdater] Update failed:`, error);
