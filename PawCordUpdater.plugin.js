@@ -58,7 +58,6 @@ module.exports = class PawCordUpdater {
             console.error(`[PawCordUpdater] Update failed:`, error);
         }
     }
-
     stop() {
         console.log(`[PawCordUpdater] Stopped!`);
     }
