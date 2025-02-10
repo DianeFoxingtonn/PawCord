@@ -311,6 +311,10 @@ startOpeningIntroPlugin() {
 
             //resume other functions normally
             this.startDmSlidingPart();
+            // Auto-update
+            this.checkForUpdates().then(() => {
+            console.log(`[${this.pluginName}] Update check completed.`);
+                });
             this.startHiddenServerList();
         }, 4000);
     }
@@ -606,12 +610,9 @@ start() {
 
     // Start individual plugin functionalities
     
-    
+    this.startOpeningIntroPlugin();
 
-    // Auto-update
-    this.checkForUpdates().then(() => {
-        console.log(`[${this.pluginName}] Update check completed.`);
-    });
+    
 
 }
 
