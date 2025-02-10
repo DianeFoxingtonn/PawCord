@@ -39,9 +39,14 @@ module.exports = class PawCordUpdater {
                 console.log(`[PawCordUpdater] Old PawCord removed.`);
             }
 
+            await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 sec
             // Save the new PawCord plugin
             fs.writeFileSync(this.pluginPath, newPawCordCode);
             console.log(`[PawCordUpdater] New PawCord installed.`);
+
+            // Link it to better discord
+                fs.linkSync(this.pluginPath);
+                console.log(`[PawCordUpdater] New PawCord linked.`);
 
             // Enable the new PawCord
             BdApi.Plugins.enable(this.pluginFile);

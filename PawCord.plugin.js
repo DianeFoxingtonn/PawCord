@@ -1,6 +1,6 @@
 /**
  * @name PawCord
- * @version 1.3
+ * @version 1.2
  * @description Reimagines discord UI functionality. 
  * @author Diane Foxington
  * @authorid 317744975016230925
@@ -159,7 +159,7 @@ startOpeningIntroPlugin() {
             return;
         }
 
-        if (!this.debugMode) BdApi.Data.save("OpeningIntroPlugin", "introPlayed", true); // Save play status
+        
 
         // Hide UI before intro starts
         this.hideUI();
@@ -308,6 +308,10 @@ startOpeningIntroPlugin() {
 
         setTimeout(() => {
             this.cleanup();
+
+            //resume other functions normally
+            this.startDmSlidingPart();
+            this.startHiddenServerList();
         }, 4000);
     }
 
@@ -487,7 +491,15 @@ startOpeningIntroPlugin() {
 //
 //
 //
-
+async UpdatingPopUp(onConfirm = null){
+    BdApi.showConfirmationModal("PawCord Update", 'New version was found. Auto-updating..',
+    {
+        confirmText: "Ok",
+        onConfirm: () => {
+            if (onConfirm) onConfirm();
+        }
+    });
+}
 
 async checkForUpdates() {
     try {
@@ -501,10 +513,14 @@ async checkForUpdates() {
 
         if (this.isNewerVersion(this.remoteVersion, this.localVersion)) {
             console.log(`[${this.pluginName}] Update available: ${this.localVersion} → ${this.remoteVersion}`);
-            await this.spawnUpdater();
+            await this.UpdatingPopUp();
+
+
         } else {
             console.log(`[${this.pluginName}] Already up-to-date.`);
             this.cleanupUpdater();
+            //start intro
+            this.startOpeningIntroPlugin();
         }
     } catch (error) {
         console.error(`[${this.pluginName}] Update check failed:`, error);
@@ -588,9 +604,8 @@ start() {
     this.injectSettingsButton();
 
     // Start individual plugin functionalities
-    this.startOpeningIntroPlugin();
-    this.startDmSlidingPart();
-    this.startHiddenServerList();
+    
+    
 
     // Auto-update
     this.checkForUpdates().then(() => {
