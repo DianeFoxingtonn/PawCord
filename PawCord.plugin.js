@@ -1,11 +1,7 @@
 /**
  * @name PawCord
- * @version 1.2
- * @description Reimagines discord UI functionality. \n
- * Features:
- * Hidden server list (open it by hovering over where it should appear)
- * Chat box animations (triggers on click of DM)
- * Intro Sequence (mostly watermark but also a neat startup feature to hide slow loading)
+ * @version 1.1
+ * @description Reimagines discord UI functionality. 
  * @author Diane Foxington
  * @authorid 317744975016230925
  * @source https://github.com/DianeFoxingtonn/PawCord/tree/main
@@ -13,17 +9,22 @@
 const fs = require('fs');
 const path = require('path');
 
-
 module.exports = class PawCord {
     constructor() {
         // Update
+        this.pluginName = "PawCord";
+        this.pluginFile = "PawCord.plugin.js";
+        this.pluginPath = path.join(BdApi.Plugins.folder, this.pluginFile);
+        this.updaterFile = "PawCordUpdater.plugin.js";
+        this.updaterPath = path.join(BdApi.Plugins.folder, this.updaterFile);
+        this.rawGithubUrl = "https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js";
+        this.rawUpdaterUrl = "https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCordUpdater.plugin.js";
         this.localVersion = null;
         this.remoteVersion = null;
-        this.pluginPath = path.resolve(__dirname, 'PawCord.plugin.js');  // Full resolved path
 
         // 2
         this.logoURL = "https://i.imgur.com/6LQb3ZJ.png"; // Custom Paw Cord logo
-        this.debugMode = true; // Debug mode enabled
+        this.debugMode = false; // Debug mode enabled
         this.overrideInterval = null; // Forces UI above intro
 
 
@@ -41,7 +42,7 @@ module.exports = class PawCord {
         };
     }
 
-
+    
     getSettingsPanel() {
         // Create the settings UI (a simple form with checkboxes for example)
         const settingsPanel = document.createElement('div');
@@ -434,7 +435,7 @@ startOpeningIntroPlugin() {
         if (this.observer) this.observer.disconnect();
 
         this.observer = new MutationObserver(() => {
-            console.log("[Hidden Server List] UI change detected, repositioning hover zone.");
+            
             this.createHoverZone();
         });
 
@@ -479,79 +480,104 @@ startOpeningIntroPlugin() {
                event.clientY >= rect.top && event.clientY <= rect.bottom;
     }
 
-// Update Checker
+//Update functions below here 
+//[DO NOT TOUCH UNLESS YOU KNOW WHAT YOU ARE DOING!!!!!]
+//
+//
+//
+//
+//
+async checkForUpdates() {
+    try {
+        this.localVersion = this.getLocalVersion();
+        this.remoteVersion = await this.getRemoteVersion();
+
+        if (!this.localVersion || !this.remoteVersion) {
+            console.warn(`[${this.pluginName}] Could not retrieve version info.`);
+            return;
+        }
+
+        if (this.isNewerVersion(this.remoteVersion, this.localVersion)) {
+            console.log(`[${this.pluginName}] Update available: ${this.localVersion} → ${this.remoteVersion}`);
+            this.spawnUpdater();
+        } else {
+            console.log(`[${this.pluginName}] Already up-to-date.`);
+            this.cleanupUpdater();
+        }
+    } catch (error) {
+        console.error(`[${this.pluginName}] Update check failed:`, error);
+    }
+}
+
+// 🚀 **Get the local version**
 getLocalVersion() {
     try {
-        const data = fs.readFileSync(this.pluginPath, 'utf8');
-        const versionMatch = data.match(/@version\s+([0-9\.]+)/);
-        this.localVersion = versionMatch ? versionMatch[1] : null;
-        
-    } catch (err) {
-        console.error("Error reading local plugin file:", err);
-        this.localVersion = null;
+        if (!fs.existsSync(this.pluginPath)) return null;
+        const content = fs.readFileSync(this.pluginPath, "utf8");
+        const match = content.match(/@version\s+([\d.]+)/);
+        return match ? match[1] : null;
+    } catch (error) {
+        console.error(`[${this.pluginName}] Error reading local version:`, error);
+        return null;
     }
 }
+
+// 🚀 **Get the latest version from GitHub**
 async getRemoteVersion() {
-    const rawGitHubUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js'; // Change this to your GitHub link
-
     try {
-        const response = await fetch(rawGitHubUrl);
-        if (response.ok) {
-            const text = await response.text();
-            const versionMatch = text.match(/@version\s+([0-9\.]+)/);
-            this.remoteVersion = versionMatch ? versionMatch[1] : null;
-        } else {
-            console.error('[PawCord] Failed to fetch remote plugin');
-            this.remoteVersion = null;
-        }
-    } catch (err) {
-        console.error("Error fetching remote plugin version:", err);
-        this.remoteVersion = null;
+        const response = await BdApi.Net.fetch(this.rawGithubUrl);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+        const text = await response.text();
+        const match = text.match(/@version\s+([\d.]+)/);
+        return match ? match[1] : null;
+    } catch (error) {
+        console.error(`[${this.pluginName}] Failed to fetch remote version:`, error);
+        return null;
     }
 }
 
-compareVersions(version1, version2) {
-    const v1 = version1.split('.').map(num => parseInt(num));
-    const v2 = version2.split('.').map(num => parseInt(num));
+// 🚀 **Check if the remote version is newer**
+isNewerVersion(remote, local) {
+    const parseVersion = (v) => v.split(".").map(Number);
+    const [rMajor, rMinor, rPatch] = parseVersion(remote);
+    const [lMajor, lMinor, lPatch] = parseVersion(local);
 
-    for (let i = 0; i < Math.max(v1.length, v2.length); i++) {
-        const val1 = v1[i] || 0;
-        const val2 = v2[i] || 0;
-        if (val1 > val2) return 1;
-        if (val1 < val2) return -1;
-    }
-    return 0;
+    return (
+        rMajor > lMajor ||
+        (rMajor === lMajor && rMinor > lMinor) ||
+        (rMajor === lMajor && rMinor === lMinor && rPatch > lPatch)
+    );
 }
 
-async checkForUpdates() {
-    this.getLocalVersion();
-    await this.getRemoteVersion();
-
-    if (this.localVersion && this.remoteVersion && this.localVersion !== this.remoteVersion) {
-        if (this.compareVersions(this.remoteVersion, this.localVersion) > 0) {
-            console.log(`New version available! ${this.remoteVersion} > ${this.localVersion}`);
-            await this.updatePlugin();
-        }
-    }
-}
-
-async updatePlugin() {
-    const rawGitHubUrl = 'https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCord.plugin.js'; // Change this to your GitHub link
-
+// 🚀 **Spawn the Updater Plugin**
+async spawnUpdater() {
     try {
-        const response = await fetch(rawGitHubUrl);
-        if (response.ok) {
-            const text = await response.text();
-            fs.writeFileSync(this.pluginPath, text, 'utf8');
-            this.showUpdatePopup();
-        } else {
-            console.error('[PawCord] Failed to fetch remote plugin for update');
-        }
-    } catch (err) {
-        console.error("[PawCord] Error updating plugin:", err);
+        console.log(`[${this.pluginName}] Downloading Updater Plugin...`);
+        const response = await BdApi.Net.fetch(this.rawUpdaterUrl);
+        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+
+        const updaterCode = await response.text();
+        fs.writeFileSync(this.updaterPath, updaterCode);
+        console.log(`[${this.pluginName}] Updater Plugin saved.`);
+
+        // Enable the updater plugin
+        BdApi.Plugins.enable("PawCordUpdater.plugin.js");
+    } catch (error) {
+        console.error(`[${this.pluginName}] Failed to spawn updater:`, error);
     }
 }
 
+// 🚀 **Remove the updater if it exists**
+cleanupUpdater() {
+    if (fs.existsSync(this.updaterPath)) {
+        console.log(`[${this.pluginName}] Cleaning up old updater.`);
+        fs.unlinkSync(this.updaterPath);
+    }
+
+
+
+}
 showUpdatePopup() {
     BdApi.showConfirmationModal(
         "PawCord Update",
@@ -579,12 +605,10 @@ start() {
     this.startDmSlidingPart();
     this.startHiddenServerList();
 
-    // Start auto update check
-    this.checkForUpdates();
-
-    // This assumes the plugin file is in the same directory as the plugin code
-    const pluginPath = path.resolve(__dirname, 'PawCord.plugin.js');
-    console.log('Resolved Full Plugin Path:', pluginPath);  
+    // Auto-update
+    this.checkForUpdates().then(() => {
+        console.log(`[${this.pluginName}] Update check completed.`);
+    });
 
 }
 
