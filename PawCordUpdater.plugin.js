@@ -44,9 +44,6 @@ module.exports = class PawCordUpdater {
             fs.writeFileSync(this.pluginPath, newPawCordCode);
             console.log(`[PawCordUpdater] New PawCord installed.`);
 
-            // Link it to better discord
-                fs.linkSync(this.pluginPath);
-                console.log(`[PawCordUpdater] New PawCord linked.`);
 
             // Enable the new PawCord
             BdApi.Plugins.enable(this.pluginFile);
