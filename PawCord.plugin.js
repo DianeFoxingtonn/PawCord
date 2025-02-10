@@ -1,6 +1,6 @@
 /**
  * @name PawCord
- * @version 1.3
+ * @version 1.2
  * @description Reimagines discord UI functionality. 
  * @author Diane Foxington
  * @authorid 317744975016230925
@@ -487,96 +487,8 @@ startOpeningIntroPlugin() {
 //
 //
 //
-async checkForUpdates() {
-    try {
-        this.localVersion = this.getLocalVersion();
-        this.remoteVersion = await this.getRemoteVersion();
-
-        if (!this.localVersion || !this.remoteVersion) {
-            console.warn(`[${this.pluginName}] Could not retrieve version info.`);
-            return;
-        }
-
-        if (this.isNewerVersion(this.remoteVersion, this.localVersion)) {
-            console.log(`[${this.pluginName}] Update available: ${this.localVersion} → ${this.remoteVersion}`);
-            await this.spawnUpdater();
-        } else {
-            console.log(`[${this.pluginName}] Already up-to-date.`);
-            this.cleanupUpdater();
-        }
-    } catch (error) {
-        console.error(`[${this.pluginName}] Update check failed:`, error);
-    }
-}
-
-getLocalVersion() {
-    try {
-        if (!fs.existsSync(this.pluginPath)) return null;
-        const content = fs.readFileSync(this.pluginPath, "utf8");
-        const match = content.match(/@version\s+([\d.]+)/);
-        return match ? match[1] : null;
-    } catch (error) {
-        console.error(`[${this.pluginName}] Error reading local version:`, error);
-        return null;
-    }
-}
-
-async getRemoteVersion() {
-    try {
-        const response = await BdApi.Net.fetch(this.rawGithubUrl);
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-
-        const text = await response.text();
-        const match = text.match(/@version\s+([\d.]+)/);
-        return match ? match[1] : null;
-    } catch (error) {
-        console.error(`[${this.pluginName}] Failed to fetch remote version:`, error);
-        return null;
-    }
-}
-
-isNewerVersion(remote, local) {
-    const parseVersion = (v) => v.split(".").map(Number);
-    const [rMajor, rMinor, rPatch] = parseVersion(remote);
-    const [lMajor, lMinor, lPatch] = parseVersion(local);
-
-    return (
-        rMajor > lMajor ||
-        (rMajor === lMajor && rMinor > lMinor) ||
-        (rMajor === lMajor && rMinor === lMinor && rPatch > lPatch)
-    );
-}
-
-async spawnUpdater() {
-    try {
-        console.log(`[${this.pluginName}] Downloading Updater Plugin...`);
-        const response = await BdApi.Net.fetch(this.rawUpdaterUrl);
-        if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-
-        const updaterCode = await response.text();
-        fs.writeFileSync(this.updaterPath, updaterCode);
-        console.log(`[${this.pluginName}] Updater Plugin saved.`);
-
-        // Wait for BetterDiscord to recognize the new plugin
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        // Directly execute the updater plugin script to start it immediately
-        console.log(`[${this.pluginName}] Running updater immediately.`);
-        require(this.updaterPath).start();
-    } catch (error) {
-        console.error(`[${this.pluginName}] Failed to spawn updater:`, error);
-    }
-}
-
-cleanupUpdater() {
-    if (fs.existsSync(this.updaterPath)) {
-        console.log(`[${this.pluginName}] Cleaning up old updater.`);
-        fs.unlinkSync(this.updaterPath);
-    }
-}
 
 
-/*
 async checkForUpdates() {
     try {
         this.localVersion = this.getLocalVersion();
@@ -667,7 +579,7 @@ cleanupUpdater() {
         console.log(`[${this.pluginName}] Cleaning up old updater.`);
         fs.unlinkSync(this.updaterPath);
     }
-}*/
+}
 
 
 /* ------------------- START func. HERE ------------------ */
