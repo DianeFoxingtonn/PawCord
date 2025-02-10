@@ -309,9 +309,12 @@ startOpeningIntroPlugin() {
 
         setTimeout(() => {
             this.cleanup();
-
             //resume other functions normally
             this.startDmSlidingPart();
+            // Auto-update
+            this.checkForUpdates().then(() => {
+            console.log(`[${this.pluginName}] Update check completed.`);
+                });
             this.startHiddenServerList();
         }, 3000);
     }
@@ -606,18 +609,8 @@ start() {
     this.injectSettingsButton();
 
     // Start individual plugin functionalities
-    // Auto-update
-    this.checkForUpdates().then(() => {
-        console.log(`[${this.pluginName}] Update check completed.`);
-            });
-    //start intro
-    if(this.updateUnnecessary == 1){
-        console.log(this.updateUnnecessary)
-        this.startOpeningIntroPlugin();
-    }
-    else{
-        
-    }
+    
+    this.startOpeningIntroPlugin();
     
     
 
