@@ -1,6 +1,6 @@
 /**
  * @name PawCord
- * @version 1.2
+ * @version 1.1
  * @description Reimagines discord UI functionality. 
  * @author Diane Foxington
  * @authorid 317744975016230925
