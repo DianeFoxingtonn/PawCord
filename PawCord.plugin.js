@@ -21,6 +21,7 @@ module.exports = class PawCord {
         this.rawUpdaterUrl = "https://raw.githubusercontent.com/DianeFoxingtonn/PawCord/main/PawCordUpdater.plugin.js";
         this.localVersion = null;
         this.remoteVersion = null;
+        this.updateUnnecessary = null;
 
         // 2
         this.logoURL = "https://i.imgur.com/6LQb3ZJ.png"; // Custom Paw Cord logo
@@ -519,9 +520,9 @@ async checkForUpdates() {
 
         } else {
             console.log(`[${this.pluginName}] Already up-to-date.`);
+            this.updateUnnecessary = 1;
             this.cleanupUpdater();
-            //start intro
-            this.startOpeningIntroPlugin();
+            
         }
     } catch (error) {
         console.error(`[${this.pluginName}] Update check failed:`, error);
@@ -605,9 +606,19 @@ start() {
     this.injectSettingsButton();
 
     // Start individual plugin functionalities
+    // Auto-update
+    this.checkForUpdates().then(() => {
+        console.log(`[${this.pluginName}] Update check completed.`);
+            });
+    //start intro
+    if(this.updateUnnecessary == 1){
+        console.log(this.updateUnnecessary)
+        this.startOpeningIntroPlugin();
+    }
+    else{
+        
+    }
     
-    this.startOpeningIntroPlugin();
-
     
 
 }
