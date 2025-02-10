@@ -33,13 +33,6 @@ module.exports = class PawCordUpdater {
             BdApi.Plugins.disable(this.pluginFile);
             await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 sec
 
-            // Remove the old PawCord file
-            /*
-            if (fs.existsSync(this.pluginPath)) {
-                fs.unlinkSync(this.pluginPath);
-                console.log(`[PawCordUpdater] Old PawCord removed.`);
-            }
-*/
             await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 sec
             // Save the new PawCord plugin
             fs.writeFileSync(this.pluginPath, newPawCordCode);
