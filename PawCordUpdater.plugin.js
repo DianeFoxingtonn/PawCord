@@ -47,7 +47,7 @@ module.exports = class PawCordUpdater {
 
             // Enable the new PawCord
             await new Promise((resolve) => setTimeout(resolve, 1000));
-            if (fs.existsSync(this.pluginPath)) {
+            if (fs.existsSync(this.pluginFile)) {
                         console.log(`[${this.pluginName}] Enabling New PawCord...`);
                         BdApi.Plugins.enable("PawCord");
                     } else {

@@ -514,7 +514,6 @@ async checkForUpdates() {
 
         if (this.isNewerVersion(this.remoteVersion, this.localVersion)) {
             console.log(`[${this.pluginName}] Update available: ${this.localVersion} → ${this.remoteVersion}`);
-            await this.UpdatingPopUp();
             await new Promise((resolve) => setTimeout(resolve, 3000)); // Wait 3 secs
             await this.spawnUpdater();
 
