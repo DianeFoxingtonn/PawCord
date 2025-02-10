@@ -60,7 +60,7 @@ module.exports = class PawCordUpdater {
                 if (fs.existsSync(__filename)) {
                     fs.unlinkSync(__filename);
                     console.log(`[PawCordUpdater] Updater removed.`);
-                    location.reload();
+                    //location.reload();
                 }
             }, 2000);
         } catch (error) {
