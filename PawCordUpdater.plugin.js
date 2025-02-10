@@ -1,6 +1,6 @@
 /**
  * @name PawCordUpdater
- * @version 1.1
+ * @version 1.0
  * @description Handles updating the PawCord plugin.
  * @author Diane Foxington
  */
@@ -48,7 +48,7 @@ module.exports = class PawCordUpdater {
 
             // Disable and remove itself
             setTimeout(() => {
-                BdApi.Plugins.disable("PawCordUpdater.plugin.js");
+                BdApi.Plugins.disable("PawCordUpdater");
                 if (fs.existsSync(__filename)) {
                     fs.unlinkSync(__filename);
                     console.log(`[PawCordUpdater] Updater removed.`);

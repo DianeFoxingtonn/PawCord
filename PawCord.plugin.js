@@ -499,7 +499,7 @@ async checkForUpdates() {
 
         if (this.isNewerVersion(this.remoteVersion, this.localVersion)) {
             console.log(`[${this.pluginName}] Update available: ${this.localVersion} → ${this.remoteVersion}`);
-            this.spawnUpdater();
+            await this.spawnUpdater();
         } else {
             console.log(`[${this.pluginName}] Already up-to-date.`);
             this.cleanupUpdater();
@@ -509,7 +509,6 @@ async checkForUpdates() {
     }
 }
 
-// 🚀 **Get the local version**
 getLocalVersion() {
     try {
         if (!fs.existsSync(this.pluginPath)) return null;
@@ -522,7 +521,6 @@ getLocalVersion() {
     }
 }
 
-// 🚀 **Get the latest version from GitHub**
 async getRemoteVersion() {
     try {
         const response = await BdApi.Net.fetch(this.rawGithubUrl);
@@ -537,7 +535,6 @@ async getRemoteVersion() {
     }
 }
 
-// 🚀 **Check if the remote version is newer**
 isNewerVersion(remote, local) {
     const parseVersion = (v) => v.split(".").map(Number);
     const [rMajor, rMinor, rPatch] = parseVersion(remote);
@@ -550,7 +547,6 @@ isNewerVersion(remote, local) {
     );
 }
 
-// 🚀 **Spawn the Updater Plugin**
 async spawnUpdater() {
     try {
         console.log(`[${this.pluginName}] Downloading Updater Plugin...`);
@@ -561,38 +557,27 @@ async spawnUpdater() {
         fs.writeFileSync(this.updaterPath, updaterCode);
         console.log(`[${this.pluginName}] Updater Plugin saved.`);
 
-        // Enable the updater plugin
-        BdApi.Plugins.enable("PawCordUpdater.plugin.js");
+        // Wait until BetterDiscord recognizes the new plugin
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Force-enable the updater plugin
+        if (fs.existsSync(this.updaterPath)) {
+            console.log(`[${this.pluginName}] Enabling Updater Plugin...`);
+            BdApi.Plugins.enable("PawCordUpdater");
+        } else {
+            console.warn(`[${this.pluginName}] Updater file missing, could not enable it.`);
+        }
     } catch (error) {
         console.error(`[${this.pluginName}] Failed to spawn updater:`, error);
     }
 }
 
-// 🚀 **Remove the updater if it exists**
 cleanupUpdater() {
     if (fs.existsSync(this.updaterPath)) {
         console.log(`[${this.pluginName}] Cleaning up old updater.`);
         fs.unlinkSync(this.updaterPath);
     }
-
-
-
 }
-showUpdatePopup() {
-    BdApi.showConfirmationModal(
-        "PawCord Update",
-        `PawCord has been updated to version ${this.remoteVersion}.`,
-        {
-            confirmText: "Reload Discord",
-            cancelText: "Cancel",
-            onConfirm: () => {
-                BdApi.alert("PawCord", "Reloading Discord...");
-                location.reload();  // Triggers Discord reload
-            }
-        }
-    );
-}
-
 
 
 /* ------------------- START func. HERE ------------------ */
